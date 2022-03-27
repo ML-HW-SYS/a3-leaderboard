@@ -123,42 +123,42 @@ if __name__ == "__main__":
     print("Profiling:")
     print(os.getcwd())
 
-    with open("results.cvs", "w") as outf:
+    with open("results.csv", "w") as outf:
         outf.write("op,dev,time(s)\n")
         try:
             conv1d_cpu_time = test_speed_conv1d_cpu()
             print("1DConv, CPU time: %ss" % conv1d_cpu_time )
-            outf.write("conv1d,cpu,%ss\n" % conv1d_cpu_time)
+            outf.write("conv1d,cpu,%s\n" % conv1d_cpu_time)
         except Exception as e:
             print(e)
-            print("1DConv, CPU time: ERROR")
-            outf.write("conv1d,cpu,ERROR\n")
+            print("1DConv, CPU time: inf")
+            outf.write("conv1d,cpu,inf\n")
 
         try:
             conv1d_gpu_time = test_speed_conv1d_gpu()
             print("1DConv, GPU time: %ss" % conv1d_gpu_time )
-            outf.write("conv1d,gpu,%ss\n" % conv1d_gpu_time)
+            outf.write("conv1d,gpu,%s\n" % conv1d_gpu_time)
         except Exception as e:
             print(e)
-            print("1DConv, GPU time: ERROR")
-            outf.write("conv1d,gpu,ERROR\n")
+            print("1DConv, GPU time: inf")
+            outf.write("conv1d,gpu,inf\n")
 
         try:
             dwsp_2dconv_gpu_time = test_speed_dwsp_conv2d_gpu()
             print("DWSPConv2D, GPU time: %ss" % dwsp_2dconv_gpu_time)
-            outf.write("DWSPConv2D,gpu,%ss\n" % dwsp_2dconv_gpu_time)
+            outf.write("DWSPConv2D,gpu,%s\n" % dwsp_2dconv_gpu_time)
         except Exception as e:
             print(e)
-            print("1DConv, GPU time: ERROR")
-            outf.write("DWSPConv2D,gpu,ERROR\n")
+            print("1DConv, GPU time: inf")
+            outf.write("DWSPConv2D,gpu,inf\n")
 
         try:
             gemm_gpu_time = test_speed_gemm_gpu()
             print("GEMM, GPU time: %ss" % gemm_gpu_time)
-            outf.write("gemm,gpu,%ss\n" % gemm_gpu_time)
+            outf.write("gemm,gpu,%s\n" % gemm_gpu_time)
         except Exception as e:
             print(e)
-            print("GEMM, GPU time: ERROR")
-            outf.write("gemm,gpu,ERROR\n")
+            print("GEMM, GPU time: inf")
+            outf.write("gemm,gpu,inf\n")
     print("DONE")
     print("-" * 100)
