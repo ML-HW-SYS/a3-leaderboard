@@ -11,6 +11,7 @@ from subprocess import STDOUT, check_output
 REPO_PREFIX = "git@github.com:ML-HW-SYS/a3-%s.git"
 SCRIPT_ROOT = os.getcwd()
 print(SCRIPT_ROOT)
+IDLEN = 6
 
 
 def random_id(l):
@@ -37,13 +38,27 @@ def pull_all_repos():
 
             # We will create one and save it to <repo_name>/leaderboard_id.txt
             if osp.isdir(repo_name):
-                student_id = random_id(12)
-                print("SID created: ", student_id)
-                with open(osp.join(repo_name, "leaderboard_id.txt"), "w+") as sidf:
-                    sidf.write(student_id)
+                lid_fname = osp.join(repo_name, "leaderboard_id.txt")
+                student_id = None
+                if osp.isfile(lid_fname):
+                    with open(lid_fname, "r") as sidf:
+                        for l in sidf:
+                            student_id = l.strip()[:IDLEN]
+                            if student_id not in repo_lst.keys():
+                                break
+                            else:
+                                student_id = None
+
+                if student_id is None:
+                    student_id = random_id(IDLEN)
+                    print("SID created: ", student_id)
+                    with open(lid_fname, "w+") as sidf:
+                        sidf.write(student_id)
+                    cmd = 'cd %s ; git pull ; echo `pwd` ; git add leaderboard_id.txt ; git commit -m "Leaderboard ID." ; git push' % repo_name
+                    print(cmd)
+                    os.system(cmd)
                 repo_lst[student_id] = (repo_name, repo_url)
 
-            # TODO: push the student-id to their repository
     print("=" * 80)
     print("=" * 80)
     print("Done pulling")
@@ -80,7 +95,7 @@ def profile_all_repos(repo_lst):
     # Gather results
     print("=" * 80)
     print("Gather outputs")
-    output, keys = {}, {}  # student id
+    output, keys = {}, None  # student id
     for sid, (repo_name, result_fname) in results_lst.items():
         print(sid, repo_name)
         with open(result_fname) as rf:
@@ -92,7 +107,10 @@ def profile_all_repos(repo_lst):
                     field_key = "-".join(field_lst[:2])
                     field_val = float(field_lst[2])
                     output[sid][field_key] = field_val
-            keys = output[sid].keys()
+            avg = sum(output[sid].values()) / float(len(output[sid].values()))
+            output[sid]['avg'] = avg
+            if keys is None:
+                keys = output[sid].keys()
     return output, keys
 
 
@@ -111,8 +129,10 @@ def create_leaderboard(results, keys):
 
 if __name__ == "__main__":
     # Load githubt handles
-    os.system("rm -rf a3-*/")
+    os.system("rm -rf %s/a3-*/" % SCRIPT_ROOT)
+    os.system("ls %s" % SCRIPT_ROOT)
     repo_lst = pull_all_repos()
+    """
     results, keys = profile_all_repos(repo_lst)
     leaderboards = create_leaderboard(results, keys)
 
@@ -127,3 +147,4 @@ if __name__ == "__main__":
     time_str = dt.now()
     os.system('git commit -m "Leader board at time: %s"' % time_str)
     os.system("git push")
+    """
