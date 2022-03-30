@@ -3,6 +3,12 @@
 # 1. run all the tests, collect results
 # 2. we will run the function of interest for n times with tiemout to gather
 #    the wallclock time it takes to complete the function.
+# TODO 1: the time only counts if the functionality test passed
+#         should output inf if the functionality tests failed
+# TODO 2: Should add timeout on all the functions so that early
+#         time out won't killed all the rest of the grades
+# TODO 3: maybe consider quantizing the results? Now right the variances
+#         are very small and not sure whether it means a lots
 import torch
 import os
 import sys
