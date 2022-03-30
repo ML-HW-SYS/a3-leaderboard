@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J test_file                         # Job name
 #SBATCH -o test_file_%j.out                  # output file (%j expands to jobID)
-#SBATCH -e test_file_%j.err                  # error log file (%j expands to jobID)
+#SBATCH -e test_file_%j.out                  # error log file (%j expands to jobID)
 #SBATCH --mail-type=ALL                      # Request status by email 
 #SBATCH --mail-user=NETID@cornell.edu        # Email address to send results to.
 #SBATCH -N 1                                 # Total number of nodes requested
