@@ -13,6 +13,12 @@ SCRIPT_ROOT = os.getcwd()
 print(SCRIPT_ROOT)
 
 
+def random_id(l):
+    from random import choice
+    from string import ascii_uppercase
+    return ''.join(choice(ascii_uppercase) for i in range(l))
+
+
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
     with open("github_handles.txt", "r") as f:
@@ -30,11 +36,12 @@ def pull_all_repos():
             os.system(cmd)
 
             # We will create one and save it to <repo_name>/leaderboard_id.txt
-            student_id = str(uuid.uuid1())
-            print("SID created: ", student_id)
-            with open(osp.join(repo_name, "leaderboard_id.txt"), "w") as sidf:
-                sidf.write(student_id)
-            repo_lst[student_id] = (repo_name, repo_url)
+            if osp.isdir(repo_name):
+                student_id = random_id(12)
+                print("SID created: ", student_id)
+                with open(osp.join(repo_name, "leaderboard_id.txt"), "w+") as sidf:
+                    sidf.write(student_id)
+                repo_lst[student_id] = (repo_name, repo_url)
 
             # TODO: push the student-id to their repository
     print("=" * 80)
@@ -73,7 +80,7 @@ def profile_all_repos(repo_lst):
     # Gather results
     print("=" * 80)
     print("Gather outputs")
-    output = {}  # student id
+    output, keys = {}, {}  # student id
     for sid, (repo_name, result_fname) in results_lst.items():
         print(sid, repo_name)
         with open(result_fname) as rf:
@@ -85,7 +92,7 @@ def profile_all_repos(repo_lst):
                     field_key = "-".join(field_lst[:2])
                     field_val = float(field_lst[2])
                     output[sid][field_key] = field_val
-    keys = output[sid].keys()
+            keys = output[sid].keys()
     return output, keys
 
 
@@ -95,14 +102,16 @@ def create_leaderboard(results, keys):
         lst = [(sid, res[key]) for sid, res in results.items()]
         lst = sorted(lst, key=lambda item: float(item[1]))
         with open(osp.join(SCRIPT_ROOT, "..", "%s.md" % key), "w") as ldfile:
-            ldfile.write("ID,Time(s)\n")
+            ldfile.write("|ID|Time(s)|\n")
+            ldfile.write("|-|-|\n")
             for sid, secs in lst:
-                ldfile.write("%s,%3.5f\n" % (sid, secs))
+                ldfile.write("|%s|%3.5f|\n" % (sid, secs))
         leaderboards.append(lst)
     return leaderboards
 
 if __name__ == "__main__":
     # Load githubt handles
+    os.system("rm -rf a3-*/")
     repo_lst = pull_all_repos()
     results, keys = profile_all_repos(repo_lst)
     leaderboards = create_leaderboard(results, keys)
@@ -111,3 +120,10 @@ if __name__ == "__main__":
     np.save("leaderboards.npy", leaderboards)
     np.save("results.npy", results)
     np.save("repos.npy", repo_lst)
+
+    # Push
+    os.system("git add ../*.md")
+    from datetime import datetime as dt
+    time_str = dt.now()
+    os.system('git commit -m "Leader board at time: %s"' % time_str)
+    os.system("git push")
