@@ -1,6 +1,6 @@
-|IDconv1d-cpu|conv1d-gpu|DWSPConv2D-gpu|gemm-gpu|avg|
+|ID|conv1d-cpu|conv1d-gpu|DWSPConv2D-gpu|gemm-gpu|avg|
 |-|-|-|-|-|-|
-|HRQJRI|0.21488s|6.61530s|30.13684s|4.05074s|10.25444s|
-|AXUMWF|0.37105s|infs|infs|15.05313s|infs|
-|AJWMWM|0.37487s|infs|infs|15.27670s|infs|
-|QFXAQA|0.54231s|infs|infs|14.86483s|infs|
+|HRQJRI|0.19353s|7.70163s|25.60304s|3.15069s|9.16222s|
+|QFXAQA|0.35620s|infs|infs|15.10650s|infs|
+|AJWMWM|0.43940s|infs|infs|15.14161s|infs|
+|AXUMWF|0.44835s|infs|infs|15.22051s|infs|

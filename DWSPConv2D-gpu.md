@@ -1,6 +1,6 @@
 |ID|Time(s)|
 |-|-|
-|HRQJRI|30.13684|
+|HRQJRI|25.60304|
 |QFXAQA|inf|
 |AXUMWF|inf|
 |AJWMWM|inf|
