@@ -116,6 +116,7 @@ def profile_all_repos(repo_lst):
 
 def create_leaderboard(results, keys):
     leaderboards = []
+    all_data = {}
     for key in keys:
         lst = [(sid, res[key]) for sid, res in results.items()]
         lst = sorted(lst, key=lambda item: float(item[1]))
@@ -124,15 +125,27 @@ def create_leaderboard(results, keys):
             ldfile.write("|-|-|\n")
             for sid, secs in lst:
                 ldfile.write("|%s|%3.5f|\n" % (sid, secs))
+                if sid not in all_data:
+                    all_data[sid] = {}
+                all_data[sid][key] = secs
         leaderboards.append(lst)
+
+    # The overall leader board
+    all_data = sorted(list(all_data.items()), key=lambda item: item[1]['avg'])
+    with open(osp.join(SCRIPT_ROOT, "..", "README.md"), "w") as ldfile:
+        ldfile.write("|ID|%s|\n" % ('|'.join(keys)))
+        ldfile.write("|%s|\n" % ("|".join(["-"] * (len(keys) + 1))))
+        for sid, secs in all_data:
+            ldfile.write("|%s|%s|\n" % (sid, "|".join(
+                [("%3.5fs" % secs[k]) for k in keys])))
     return leaderboards
+
 
 if __name__ == "__main__":
     # Load githubt handles
     os.system("rm -rf %s/a3-*/" % SCRIPT_ROOT)
     os.system("ls %s" % SCRIPT_ROOT)
     repo_lst = pull_all_repos()
-    """
     results, keys = profile_all_repos(repo_lst)
     leaderboards = create_leaderboard(results, keys)
 
@@ -147,4 +160,3 @@ if __name__ == "__main__":
     time_str = dt.now()
     os.system('git commit -m "Leader board at time: %s"' % time_str)
     os.system("git push")
-    """
