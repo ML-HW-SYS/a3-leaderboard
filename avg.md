@@ -1,6 +1,6 @@
 |ID|Time(s)|
 |-|-|
-|NPVGPP|33.86762|
+|NPVGPP|12.29880|
 |KNBQUR|inf|
 |WACSFB|inf|
 |INUSJM|inf|
