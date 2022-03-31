@@ -1,6 +1,6 @@
 |ID|Time(s)|
 |-|-|
-|LVMDNT|2.16341|
+|LVMDNT|2.12706|
 |AXUMWF|inf|
 |TKWJLM|inf|
 |YSYILE|inf|
