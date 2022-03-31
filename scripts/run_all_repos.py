@@ -50,7 +50,8 @@ def pull_all_repos():
                                 student_id = None
 
                 if student_id is None:
-                    student_id = random_id(IDLEN)
+                    while student_id is None or student_id in repo_lst.keys():
+                        student_id = random_id(IDLEN)
                     print("SID created: ", student_id)
                     with open(lid_fname, "w+") as sidf:
                         sidf.write(student_id)
