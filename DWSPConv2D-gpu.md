@@ -1,7 +1,7 @@
 |ID|Time(s)|
 |-|-|
-|SRASMR|3.92238|
-|LVMDNT|4.07107|
+|SRASMR|3.96531|
+|LVMDNT|4.08221|
 |AXUMWF|inf|
 |HRQJRI|inf|
 |TKWJLM|inf|
