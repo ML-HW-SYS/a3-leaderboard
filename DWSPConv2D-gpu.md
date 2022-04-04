@@ -1,8 +1,8 @@
 |ID|Time(s)|
 |-|-|
-|SRASMR|3.56955|
-|HRQJRI|3.58598|
-|LVMDNT|3.62181|
+|HRQJRI|3.56921|
+|LVMDNT|3.62061|
+|SRASMR|3.62777|
 |AXUMWF|inf|
 |TKWJLM|inf|
 |YSYILE|inf|
@@ -15,6 +15,7 @@
 |JISNLD|inf|
 |FHCXPO|inf|
 |WCXUMP|inf|
+|NLGGGC|inf|
 |KHAKAB|inf|
 |DOMPZP|inf|
 |MRHTFS|inf|
