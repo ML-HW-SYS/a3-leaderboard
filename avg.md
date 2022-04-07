@@ -1,8 +1,9 @@
 |ID|Time(s)|
 |-|-|
-|LVMDNT|2.37804|
-|SRASMR|2.40650|
-|HRQJRI|2.52899|
+|LVMDNT|2.36418|
+|SRASMR|2.40889|
+|HRQJRI|2.50435|
+|UULTVT|42.35988|
 |HIGTLF|inf|
 |AXUMWF|inf|
 |MLBOYW|inf|
@@ -23,4 +24,3 @@
 |GUZCWB|inf|
 |MRHTFS|inf|
 |ASJXFI|inf|
-|UULTVT|inf|
