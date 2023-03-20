@@ -78,6 +78,7 @@ def profile_all_repos(repo_lst):
         shutil.copy(
             "../repo_profiler.py", osp.join(repo_name, "repo_profiler.py"))
         os.chdir(repo_name)
+        open("tests/__init__.py", "w").close()
 
         # Timout the profiler
         cmd = "python repo_profiler.py"
@@ -160,4 +161,4 @@ if __name__ == "__main__":
     from datetime import datetime as dt
     time_str = dt.now()
     os.system('git commit -m "Leader board at time: %s"' % time_str)
-    os.system("git push")
+    os.system("git push origin 2023_branch")
