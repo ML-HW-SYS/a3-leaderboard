@@ -5,7 +5,7 @@ import numpy as np
 import os.path as osp
 from pprint import pprint
 from subprocess import STDOUT, check_output
-
+import git, subprocess
 
 # REPO_PREFIX = "https://github.com/ML-HW-SYS/a3-WenheLI"
 REPO_PREFIX = "git@github.com:ML-HW-SYS/a3-%s.git"
@@ -17,13 +17,29 @@ IDLEN = 6
 def random_id(l):
     from random import choice
     from string import ascii_uppercase
-    return ''.join(choice(ascii_uppercase) for i in range(l))
+    names = ["Rug Heed Bend","Creed Symbol","Smalltalk Dribble","Blackouts","Digital Destroyers","Key to Innovation","Grapevine Squad","Rebooting Rebels","Computer Crew","Miss Hit Proclaim","Pseudo Boom","Gonzo Brutes","Byte Mechanics","The Hit Blunders","Hackerjacks","Loose Screws","Artful Maneuvers","The ERROR List","Troubleshooters","Blue Screens","Beast Isis","Geo-Thermal Energy","Pint Sized Benchwarmers","Digitally Destroyed","Prime Calculus","Electra","Brew Alley","Power Mongers","Bait Chums","Ping Intelligence","Skyhook DimensionThe Spin Doodles","The Systems Squads","The Alter Ridge","Remote Connections","Creative Juices","Analysis Systems","Bandwidth of Brothers","Mind Ink Bots","Freak Gravity","The Cyco Paths","Analyzing Anarchists","Tech Phantoms","Dev tools Conniesseurs","Remote Controllers","Ping Intelligence","Fully Developed","Maidens of Maya","Mechanical United","Tech Connect"]
+    return names[l].replace(" ", "_")
+    # return ''.join(choice(ascii_uppercase) for i in range(l))
 
 
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
+    # if postrun_commit.txt exists, make a copy of it
+    if osp.isfile("postrun_commit.txt"):
+        shutil.copy("postrun_commit.txt", "postrun_commit.txt.bak")
+    postrun_commit = open("postrun_commit.txt", "a")
+    # Read postrun_commit.txt.bak as a dict
+    l_to_sha = {}
+    if osp.isfile("postrun_commit.txt.bak"):
+        with open("postrun_commit.txt.bak", "r") as f:
+            for l in f:
+                l = l.strip()
+                if l == "":
+                    continue
+                h, sha = l.split(",")
+                l_to_sha[h] = sha
     with open("github_handles.txt", "r") as f:
-        for l in f:
+        for idx, l in enumerate(f):
             h = l.strip()
             if h == "":
                 continue
@@ -34,8 +50,14 @@ def pull_all_repos():
             os.system(cmd)
             cmd = "cd %s & git pull origin main" % repo_name
             print(cmd)
+            if l not in l_to_sha.keys():
+                execute=1
+            else:
+                if int(subprocess.getoutput("git rev-list --count --since=%s" % (l_to_sha[l])))>1:
+                    execute=1
+                else:
+                    execute=0
             os.system(cmd)
-
             # We will create one and save it to <repo_name>/leaderboard_id.txt
             if osp.isdir(repo_name):
                 lid_fname = osp.join(repo_name, "leaderboard_id.txt")
@@ -43,7 +65,7 @@ def pull_all_repos():
                 if osp.isfile(lid_fname):
                     with open(lid_fname, "r") as sidf:
                         for l in sidf:
-                            student_id = l.strip()[:IDLEN]
+                            student_id = l.strip()
                             if student_id not in repo_lst.keys():
                                 break
                             else:
@@ -51,15 +73,19 @@ def pull_all_repos():
 
                 if student_id is None:
                     while student_id is None or student_id in repo_lst.keys():
-                        student_id = random_id(IDLEN)
+                        student_id = random_id(idx)
                     print("SID created: ", student_id)
                     with open(lid_fname, "w+") as sidf:
                         sidf.write(student_id)
                     cmd = 'cd %s ; git pull ; echo `pwd` ; git add leaderboard_id.txt ; git commit -m "Leaderboard ID." ; git push' % repo_name
                     print(cmd)
                     os.system(cmd)
-                repo_lst[student_id] = (repo_name, repo_url)
-
+                    repo = git.Repo()
+                    sha = repo.head.object.hexsha
+                    postrun_commit.write("%s,%s\n" % (l, sha))
+                # if int(subprocess.getoutput("git rev-list --count --since=yesterday --before=today HEAD"))>1:
+                repo_lst[student_id] = (repo_name, repo_url, execute)
+    postrun_commit.close()
     print("=" * 80)
     print("=" * 80)
     print("Done pulling")
@@ -71,7 +97,9 @@ def pull_all_repos():
 
 def profile_all_repos(repo_lst):
     results_lst = {}
-    for sid, (repo_name, repo_url) in repo_lst.items():
+    for sid, (repo_name, repo_url, execute) in repo_lst.items():
+        if execute==0:
+            continue
         print("=" * 80)
         print("Profiling: %s %s" % (sid, repo_name))
         print("-" * 80)
@@ -148,7 +176,7 @@ if __name__ == "__main__":
     os.system("rm -rf %s/a3-*/" % SCRIPT_ROOT)
     os.system("ls %s" % SCRIPT_ROOT)
     repo_lst = pull_all_repos()
-    results, keys = profile_all_repos(repo_lst)
+    results, keys = profile_all_repos()
     leaderboards = create_leaderboard(results, keys)
 
     # Save the output for checking
