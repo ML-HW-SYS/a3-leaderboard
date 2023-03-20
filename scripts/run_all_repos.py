@@ -25,13 +25,13 @@ def random_id(l):
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
     # if postrun_commit.txt exists, make a copy of it
-    if osp.isfile("postrun_commit.txt"):
-        shutil.copy("postrun_commit.txt", "postrun_commit.txt.bak")
-    postrun_commit = open("postrun_commit.txt", "a")
+    if osp.isfile("/home/ya255/projects/a3-leaderboard/postrun_commit.txt"):
+        shutil.copy("/home/ya255/projects/a3-leaderboard/postrun_commit.txt", "/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak")
+    postrun_commit = open("/home/ya255/projects/a3-leaderboard/postrun_commit.txt", "a")
     # Read postrun_commit.txt.bak as a dict
     l_to_sha = {}
-    if osp.isfile("postrun_commit.txt.bak"):
-        with open("postrun_commit.txt.bak", "r") as f:
+    if osp.isfile("/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak"):
+        with open("/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak", "r") as f:
             for l in f:
                 l = l.strip()
                 if l == "":
@@ -75,13 +75,15 @@ def pull_all_repos():
                     while student_id is None or student_id in repo_lst.keys():
                         student_id = random_id(idx)
                     print("SID created: ", student_id)
-                    with open(lid_fname, "w+") as sidf:
+                    with open(lid_fname, "w") as sidf:
                         sidf.write(student_id)
                     cmd = 'cd %s ; git pull ; echo `pwd` ; git add leaderboard_id.txt ; git commit -m "Leaderboard ID." ; git push' % repo_name
                     print(cmd)
-                    os.system(cmd)
+                    os.chdir(repo_name)
                     repo = git.Repo()
                     sha = repo.head.object.hexsha
+                    os.chdir(SCRIPT_ROOT)
+                    os.system(cmd)
                     postrun_commit.write("%s,%s\n" % (l, sha))
                 # if int(subprocess.getoutput("git rev-list --count --since=yesterday --before=today HEAD"))>1:
                 repo_lst[student_id] = (repo_name, repo_url, execute)
@@ -99,6 +101,7 @@ def profile_all_repos(repo_lst):
     results_lst = {}
     for sid, (repo_name, repo_url, execute) in repo_lst.items():
         if execute==0:
+            print("Skipping: %s %s" % (sid, repo_name))
             continue
         print("=" * 80)
         print("Profiling: %s %s" % (sid, repo_name))
@@ -176,7 +179,7 @@ if __name__ == "__main__":
     os.system("rm -rf %s/a3-*/" % SCRIPT_ROOT)
     os.system("ls %s" % SCRIPT_ROOT)
     repo_lst = pull_all_repos()
-    results, keys = profile_all_repos()
+    results, keys = profile_all_repos(repo_lst)
     leaderboards = create_leaderboard(results, keys)
 
     # Save the output for checking
