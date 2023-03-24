@@ -14,5 +14,5 @@
 |Loose_Screws|inf|
 |Artful_Maneuvers|inf|
 |The_ERROR_List|inf|
-|Beast|inf|
+|Beasts|inf|
 |Digitally_Destroyed|inf|
