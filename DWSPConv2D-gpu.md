@@ -6,6 +6,7 @@
 |Key_to_Innovation|inf|
 |Grapevine_Squad|inf|
 |Rebooting_Rebels|inf|
+|Computer_Crew|inf|
 |Pseudo_Boom|inf|
 |Gonzo_Brutes|inf|
 |Byte_Mechanics|inf|
