@@ -1,5 +1,6 @@
 |ID|Time(s)|
 |-|-|
+|Pseudo_Boom|0.15965|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
@@ -7,7 +8,6 @@
 |Grapevine_Squad|inf|
 |Rebooting_Rebels|inf|
 |Computer_Crew|inf|
-|Pseudo_Boom|inf|
 |Gonzo_Brutes|inf|
 |Byte_Mechanics|inf|
 |The_Hit_Blunders|inf|
