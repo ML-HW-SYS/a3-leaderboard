@@ -1,6 +1,6 @@
 |ID|Time(s)|
 |-|-|
-|Pseudo_Boom|0.17856|
+|Pseudo_Boom|0.15417|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
