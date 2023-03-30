@@ -1,6 +1,5 @@
 |ID|Time(s)|
 |-|-|
-|Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
