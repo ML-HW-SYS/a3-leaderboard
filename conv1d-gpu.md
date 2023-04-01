@@ -1,8 +1,8 @@
 |ID|Time(s)|
 |-|-|
-|Smalltalk_Dribble|0.11999|
-|Rebooting_Rebels|0.15198|
-|Pseudo_Boom|0.15619|
+|Rebooting_Rebels|0.14236|
+|Pseudo_Boom|0.15525|
+|Smalltalk_Dribble|0.15634|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
