@@ -1,11 +1,11 @@
 |ID|Time(s)|
 |-|-|
+|Rebooting_Rebels|3.21263|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
 |Grapevine_Squad|inf|
-|Rebooting_Rebels|inf|
 |Computer_Crew|inf|
 |Pseudo_Boom|inf|
 |Gonzo_Brutes|inf|
