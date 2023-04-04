@@ -1,6 +1,6 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.33953|
+|Rebooting_Rebels|1.36512|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
