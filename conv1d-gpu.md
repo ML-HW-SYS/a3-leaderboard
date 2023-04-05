@@ -1,10 +1,10 @@
 |ID|Time(s)|
 |-|-|
-|Hackerjacks|0.12480|
-|Smalltalk_Dribble|0.13664|
-|Digitally_Destroyed|0.14166|
-|Rebooting_Rebels|0.14863|
-|Pseudo_Boom|0.16955|
+|Smalltalk_Dribble|0.12417|
+|Digitally_Destroyed|0.14787|
+|Hackerjacks|0.15470|
+|Rebooting_Rebels|0.15957|
+|Pseudo_Boom|0.17233|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
