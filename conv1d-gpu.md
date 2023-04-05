@@ -1,9 +1,10 @@
 |ID|Time(s)|
 |-|-|
-|Smalltalk_Dribble|0.13494|
-|Rebooting_Rebels|0.14990|
-|Pseudo_Boom|0.16933|
-|Digitally_Destroyed|0.20119|
+|Hackerjacks|0.12480|
+|Smalltalk_Dribble|0.13664|
+|Digitally_Destroyed|0.14166|
+|Rebooting_Rebels|0.14863|
+|Pseudo_Boom|0.16955|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
@@ -12,7 +13,6 @@
 |Gonzo_Brutes|inf|
 |Byte_Mechanics|inf|
 |The_Hit_Blunders|inf|
-|Hackerjacks|inf|
 |Loose_Screws|inf|
 |Artful_Maneuvers|inf|
 |The_ERROR_List|inf|

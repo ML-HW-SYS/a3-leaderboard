@@ -1,6 +1,7 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.46083|
+|Rebooting_Rebels|1.30066|
+|Hackerjacks|1.39462|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
@@ -11,7 +12,6 @@
 |Gonzo_Brutes|inf|
 |Byte_Mechanics|inf|
 |The_Hit_Blunders|inf|
-|Hackerjacks|inf|
 |Loose_Screws|inf|
 |Artful_Maneuvers|inf|
 |The_ERROR_List|inf|
