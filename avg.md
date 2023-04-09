@@ -1,7 +1,7 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.36126|
-|Hackerjacks|1.45961|
+|Rebooting_Rebels|1.38204|
+|Hackerjacks|1.48098|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
