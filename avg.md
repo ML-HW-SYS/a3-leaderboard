@@ -1,10 +1,11 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.18605|
-|Beasts|1.25918|
-|The_ERROR_List|1.28082|
-|Hackerjacks|1.29530|
-|Pseudo_Boom|2.01475|
+|Rebooting_Rebels|1.18457|
+|Beasts|1.26453|
+|The_ERROR_List|1.29578|
+|Hackerjacks|1.31577|
+|Pseudo_Boom|1.99297|
+|Rug_Heed_Bend|33.50863|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
