@@ -1,14 +1,14 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.20312|
-|Hackerjacks|1.36177|
+|Rebooting_Rebels|1.19092|
+|Hackerjacks|1.29213|
+|Pseudo_Boom|1.96330|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
 |Key_to_Innovation|inf|
 |Grapevine_Squad|inf|
 |Computer_Crew|inf|
-|Pseudo_Boom|inf|
 |Gonzo_Brutes|inf|
 |Byte_Mechanics|inf|
 |The_Hit_Blunders|inf|
