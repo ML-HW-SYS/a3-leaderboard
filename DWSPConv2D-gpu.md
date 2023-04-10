@@ -1,10 +1,10 @@
 |ID|Time(s)|
 |-|-|
-|Hackerjacks|2.98183|
-|Rebooting_Rebels|3.16794|
-|The_ERROR_List|3.28215|
-|Beasts|3.45112|
-|Pseudo_Boom|3.66269|
+|The_ERROR_List|2.79281|
+|Beasts|2.80465|
+|Rebooting_Rebels|2.84436|
+|Hackerjacks|2.92985|
+|Pseudo_Boom|3.18486|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
 |Digital_Destroyers|inf|
