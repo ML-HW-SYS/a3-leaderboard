@@ -1,12 +1,13 @@
 |ID|Time(s)|
 |-|-|
-|Rebooting_Rebels|1.24369|
-|Loose_Screws|1.29387|
-|The_ERROR_List|1.34856|
-|Hackerjacks|1.35088|
-|Pseudo_Boom|1.54804|
-|Digitally_Destroyed|1.88519|
-|Rug_Heed_Bend|33.71812|
+|Rebooting_Rebels|1.25668|
+|Loose_Screws|1.29463|
+|Beasts|1.33272|
+|Hackerjacks|1.35082|
+|The_ERROR_List|1.35672|
+|Pseudo_Boom|1.43880|
+|Digitally_Destroyed|1.88831|
+|Rug_Heed_Bend|33.58830|
 |Creed_Symbol|inf|
 |Smalltalk_Dribble|inf|
 |Blackouts|inf|
@@ -18,5 +19,4 @@
 |Byte_Mechanics|inf|
 |The_Hit_Blunders|inf|
 |Artful_Maneuvers|inf|
-|Beasts|inf|
 |Pint_Sized_Benchwarmers|inf|
