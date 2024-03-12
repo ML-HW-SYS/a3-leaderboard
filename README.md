@@ -1,3 +1,3 @@
 |ID|conv1d-cpu|conv1d-gpu|DWSPConv2D-gpu|gemm-gpu|avg|
 |-|-|-|-|-|-|
-|Rug_Heed_Bend|0.28417s|0.13224s|3.11430s|2.06934s|1.40001s|
+|Rug_Heed_Bend|0.50304s|0.13269s|2.99010s|1.96887s|1.39868s|
