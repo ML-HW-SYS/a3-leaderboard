@@ -1,15 +1,17 @@
 #!/bin/bash
 #SBATCH -J test_file                         # Job name
-#SBATCH -o test_logs/test_file_%j.out                  # output file (%j expands to jobID)
-#SBATCH -e test_logs/test_file_%j.err                  # error log file (%j expands to jobID)
+#SBATCH -o a3_leaderboard_%j.out                  # output file (%j expands to jobID)
+#SBATCH -e a3_leaderboard_%j.err                  # error log file (%j expands to jobID)
+#SBATCH --mail-type=ALL                      # Request status by email 
+#SBATCH --mail-user=afa55@cornell.edu        # Email address to send results to.
 #SBATCH -N 1                                 # Total number of nodes requested
 #SBATCH -n 1                                 # Total number of cores requested
 #SBATCH --get-user-env                       # retrieve the users login environment
-#SBATCH --mem=2000                           # server memory requested (per node)
+#SBATCH --mem=4g                           # server memory requested (per node)
 #SBATCH -t 2:00:00                           # Time limit (hh:mm:ss)
 #SBATCH --partition=abdelfattah
 #SBATCH --nodelist=abdelfattah-compute-01 
 #SBATCH --account=abdelfattah
 #SBATCH --gres=gpu:1
 
-/home/ya255/projects/a3-leaderboard/slurm_run.sh
+bash /home/afa55/a3-leaderboard/slurm_run.sh
