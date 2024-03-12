@@ -6,12 +6,15 @@ import os.path as osp
 from pprint import pprint
 from subprocess import STDOUT, check_output
 import git, subprocess
+import pandas as pd
+import time
 
 # REPO_PREFIX = "https://github.com/ML-HW-SYS/a3-WenheLI"
-REPO_PREFIX = "git@github.com:ML-HW-SYS/a3-%s.git"
-SCRIPT_ROOT = os.getcwd()
-print(SCRIPT_ROOT)
+REPO_PREFIX = f"https://{os.environ['GH_TOKEN']}@github.com/ML-HW-SYS/a3-%s.git"
+REPO_ROOT = os.getcwd()
+print(REPO_ROOT)
 IDLEN = 6
+YEAR = 2024
 
 
 def random_id(l):
@@ -25,68 +28,69 @@ def random_id(l):
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
     # if postrun_commit.txt exists, make a copy of it
-    if osp.isfile("/home/ya255/projects/a3-leaderboard/postrun_commit.txt"):
-        shutil.copy("/home/ya255/projects/a3-leaderboard/postrun_commit.txt", "/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak")
-    postrun_commit = open("/home/ya255/projects/a3-leaderboard/postrun_commit.txt", "a")
+    if osp.isfile(f"{REPO_ROOT}/postrun_commit.txt"):
+        shutil.copy(f"{REPO_ROOT}/postrun_commit.txt", f"{REPO_ROOT}/postrun_commit-{time.time()}.txt.bak")
+    postrun_commit = open(f"{REPO_ROOT}/postrun_commit.txt", "a")
     # Read postrun_commit.txt.bak as a dict
-    l_to_sha = {}
-    if osp.isfile("/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak"):
-        with open("/home/ya255/projects/a3-leaderboard/postrun_commit.txt.bak", "r") as f:
-            for l in f:
+    h_to_sha = {}
+    if osp.isfile(f"{REPO_ROOT}/postrun_commit.txt.bak"):
+        with open(f"{REPO_ROOT}/postrun_commit.txt.bak", "r") as f:
+            for l in f :
                 l = l.strip()
                 if l == "":
                     continue
                 h, sha = l.split(",")
-                l_to_sha[h] = sha
-    with open("github_handles.txt", "r") as f:
-        for idx, l in enumerate(f):
-            h = l.strip()
-            if h == "":
-                continue
-            repo_url = REPO_PREFIX % h
-            repo_name = "a3-%s" % h
-            cmd = "git clone %s" % repo_url
-            print(cmd)
-            os.system(cmd)
-            cmd = "cd %s & git pull origin main" % repo_name
-            print(cmd)
-            if l not in l_to_sha.keys():
+                h_to_sha[h] = sha
+    # Read column github_username from github_handles.csv
+    usernames = pd.read_csv(f"{REPO_ROOT}/github_handles.csv")["github_username"]
+    for idx, h in enumerate(usernames):
+        h = h.strip()
+        if h == "":
+            continue
+        repo_url = REPO_PREFIX % h
+        repo_name = "a3-%s" % h
+        cmd = "git clone %s" % repo_url
+        print(cmd)
+        os.system(cmd)
+        cmd = "cd %s & git pull origin main" % repo_name
+        print(cmd)
+        if h not in h_to_sha.keys():
+            execute=1
+        else:
+            if int(subprocess.getoutput("git rev-list --count --since=%s" % (h_to_sha[l])))>1:
                 execute=1
             else:
-                if int(subprocess.getoutput("git rev-list --count --since=%s" % (l_to_sha[l])))>1:
-                    execute=1
-                else:
-                    execute=0
-            os.system(cmd)
-            # We will create one and save it to <repo_name>/leaderboard_id.txt
-            if osp.isdir(repo_name):
-                lid_fname = osp.join(repo_name, "leaderboard_id.txt")
-                student_id = None
-                if osp.isfile(lid_fname):
-                    with open(lid_fname, "r") as sidf:
-                        for l in sidf:
-                            student_id = l.strip()
-                            if student_id not in repo_lst.keys():
-                                break
-                            else:
-                                student_id = None
+                execute=0
+        os.system(cmd)
+        # We will create one and save it to <repo_name>/leaderboard_id.txt
+        if osp.isdir(repo_name):
+            lid_fname = osp.join(repo_name, "leaderboard_id.txt")
+            student_id = None
+            if osp.isfile(lid_fname):
+                with open(lid_fname, "r") as sidf:
+                    for l in sidf:
+                        student_id = l.strip()
+                        if student_id not in repo_lst.keys():
+                            break
+                        else:
+                            student_id = None
 
-                if student_id is None:
-                    while student_id is None or student_id in repo_lst.keys():
-                        student_id = random_id(idx)
-                    print("SID created: ", student_id)
-                    with open(lid_fname, "w") as sidf:
-                        sidf.write(student_id)
-                    cmd = 'cd %s ; git pull ; echo `pwd` ; git add leaderboard_id.txt ; git commit -m "Leaderboard ID." ; git push' % repo_name
-                    print(cmd)
-                    os.chdir(repo_name)
-                    repo = git.Repo()
-                    sha = repo.head.object.hexsha
-                    os.chdir(SCRIPT_ROOT)
-                    os.system(cmd)
-                    postrun_commit.write("%s,%s\n" % (l, sha))
-                # if int(subprocess.getoutput("git rev-list --count --since=yesterday --before=today HEAD"))>1:
-                repo_lst[student_id] = (repo_name, repo_url, execute)
+            if student_id is None:
+                while student_id is None or student_id in repo_lst.keys():
+                    student_id = random_id(idx)
+                print("SID created: ", student_id)
+                with open(lid_fname, "w") as sidf:
+                    sidf.write(student_id)
+                cmd = 'cd %s ; git pull ; echo `pwd` ; git add leaderboard_id.txt ; git commit -m "Leaderboard ID." ; git push' % repo_name
+                print(cmd)
+                os.chdir(repo_name)
+                repo = git.Repo()
+                sha = repo.head.object.hexsha
+                os.chdir(REPO_ROOT)
+                os.system(cmd)
+                postrun_commit.write("%s,%s\n" % (l, sha))
+            # if int(subprocess.getoutput("git rev-list --count --since=yesterday --before=today HEAD"))>1:
+            repo_lst[student_id] = (repo_name, repo_url, execute)
     postrun_commit.close()
     print("=" * 80)
     print("=" * 80)
@@ -107,7 +111,7 @@ def profile_all_repos(repo_lst):
         print("Profiling: %s %s" % (sid, repo_name))
         print("-" * 80)
         shutil.copy(
-            "../repo_profiler.py", osp.join(repo_name, "repo_profiler.py"))
+            "./repo_profiler.py", osp.join(repo_name, "repo_profiler.py"))
         os.chdir(repo_name)
         open("tests/__init__.py", "w").close()
 
@@ -118,11 +122,11 @@ def profile_all_repos(repo_lst):
             output = check_output(cmd, stderr=STDOUT, timeout=100, shell=True)
             print(output)
             results_lst[sid] = (
-                repo_name, osp.join(SCRIPT_ROOT, repo_name, "results.csv"))
+                repo_name, osp.join(REPO_ROOT, repo_name, "results.csv"))
         except Exception as e:
             print(e)
-            print("Timeout:", osp.join(SCRIPT_ROOT, repo_name, "results.csv"))
-        os.chdir(SCRIPT_ROOT)
+            print("Timeout:", osp.join(REPO_ROOT, repo_name, "results.csv"))
+        os.chdir(REPO_ROOT)
         print("=" * 80)
 
     # Gather results
@@ -153,7 +157,7 @@ def create_leaderboard(results, keys):
     for key in keys:
         lst = [(sid, res[key]) for sid, res in results.items()]
         lst = sorted(lst, key=lambda item: float(item[1]))
-        with open(osp.join(SCRIPT_ROOT, "..", "%s.md" % key), "w") as ldfile:
+        with open(osp.join(REPO_ROOT, "..", "%s.md" % key), "w") as ldfile:
             ldfile.write("|ID|Time(s)|\n")
             ldfile.write("|-|-|\n")
             for sid, secs in lst:
@@ -165,7 +169,7 @@ def create_leaderboard(results, keys):
 
     # The overall leader board
     all_data = sorted(list(all_data.items()), key=lambda item: item[1]['avg'])
-    with open(osp.join(SCRIPT_ROOT, "..", "README.md"), "w") as ldfile:
+    with open(osp.join(REPO_ROOT, "..", "README.md"), "w") as ldfile:
         ldfile.write("|ID|%s|\n" % ('|'.join(keys)))
         ldfile.write("|%s|\n" % ("|".join(["-"] * (len(keys) + 1))))
         for sid, secs in all_data:
@@ -176,8 +180,8 @@ def create_leaderboard(results, keys):
 
 if __name__ == "__main__":
     # Load githubt handles
-    os.system("rm -rf %s/a3-*/" % SCRIPT_ROOT)
-    os.system("ls %s" % SCRIPT_ROOT)
+    os.system("rm -rf %s/a3-*/" % REPO_ROOT)
+    os.system("ls %s" % REPO_ROOT)
     repo_lst = pull_all_repos()
     results, keys = profile_all_repos(repo_lst)
     leaderboards = create_leaderboard(results, keys)
@@ -192,4 +196,4 @@ if __name__ == "__main__":
     from datetime import datetime as dt
     time_str = dt.now()
     os.system('git commit -m "Leader board at time: %s"' % time_str)
-    os.system("git push origin 2023_branch")
+    os.system(f"git push origin {YEAR}_branch")
