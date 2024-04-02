@@ -87,7 +87,7 @@ def test1_speed_torch(execution_number):
     func = make_func(B, C, H, W, K)
     a = tvm.nd.array(a_np, dev)
     w = tvm.nd.array(w_np, dev)
-    b = tvm.nd.array(np.zeros(tuple(b_torch.size()), dtype='float32'), dev)
+    b = tvm.nd.array(np.zeros(tuple(b_torch.shape), dtype='float32'), dev)
     func(a, w, b)
     def tvm_time():
         func(a, w, b)
