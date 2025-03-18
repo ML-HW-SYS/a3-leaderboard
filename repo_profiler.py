@@ -16,6 +16,8 @@ import tvm
 import time
 import timeit
 import numpy as np
+import pytest
+import subprocess
 from tests.test_1dconv_cpu import make_conv1d_cpu_func
 from tests.test_1dconv_gpu import make_conv1d_gpu_func
 from tests.test_dwsp_2dconv_gpu import make_func as make_dwsp_2dconv_gpu_func
@@ -23,7 +25,22 @@ from tests.test_dwsp_2dconv_gpu import ans_torch as dwsp_2dconv_ans
 from tests.test_gemm_gpu import make_func as make_gemm_gpu_func
 
 
+def run_tests(test_file):
+    """Run tests and return True if all tests pass, False otherwise."""
+    try:
+        result = subprocess.run(['python', '-m', 'pytest', test_file, '-v'], 
+                               capture_output=True, text=True)
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error running tests: {e}")
+        return False
+
+
 def test_speed_gemm_gpu():
+    # Check if tests pass first
+    if not run_tests('tests/test_gemm_gpu.py'):
+        return float('inf')
+        
     # Define dimension
     M = 1024
     K = 1024
@@ -46,6 +63,10 @@ def test_speed_gemm_gpu():
 
 
 def test_speed_dwsp_conv2d_gpu():
+    # Check if tests pass first
+    if not run_tests('tests/test_dwsp_2dconv_gpu.py'):
+        return float('inf')
+        
     # Define dimension
     B, C, H, W, K = 10, 5, 256, 256, 3
     n_repeat = 100
@@ -77,6 +98,10 @@ def test_speed_dwsp_conv2d_gpu():
 
 
 def test_speed_conv1d_gpu():
+    # Check if tests pass first
+    if not run_tests('tests/test_1dconv_gpu.py'):
+        return float('inf')
+        
     # Define dimension
     M = 1024
     N = 1024
@@ -100,6 +125,10 @@ def test_speed_conv1d_gpu():
 
 
 def test_speed_conv1d_cpu():
+    # Check if tests pass first
+    if not run_tests('tests/test_1dconv_cpu.py'):
+        return float('inf')
+        
     # Define dimension
     dev = tvm.device('llvm', 0)
     M = 1024

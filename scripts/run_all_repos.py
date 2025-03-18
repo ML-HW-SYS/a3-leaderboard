@@ -7,29 +7,25 @@ from pprint import pprint
 from subprocess import STDOUT, check_output
 import git, subprocess
 import pandas as pd
-import time
 
 # REPO_PREFIX = "https://github.com/ML-HW-SYS/a3-WenheLI"
 REPO_PREFIX = f"https://{os.environ['GH_TOKEN']}@github.com/ML-HW-SYS/a3-%s.git"
 REPO_ROOT = os.getcwd()
 print(REPO_ROOT)
 IDLEN = 6
-YEAR = 'main'
+YEAR = '2025'
 
 
 def random_id(l):
-    from random import choice
-    from string import ascii_uppercase
-    names = ["Rug Heed Bend","Creed Symbol","Smalltalk Dribble","Blackouts","Digital Destroyers","Key to Innovation","Grapevine Squad","Rebooting Rebels","Computer Crew","Miss Hit Proclaim","Pseudo Boom","Gonzo Brutes","Byte Mechanics","The Hit Blunders","Hackerjacks","Loose Screws","Artful Maneuvers","The ERROR List","Troubleshooters","Blue Screens","Beast Isis","Geo-Thermal Energy","Pint Sized Benchwarmers","Digitally Destroyed","Prime Calculus","Electra","Brew Alley","Power Mongers","Bait Chums","Ping Intelligence","Skyhook DimensionThe Spin Doodles","The Systems Squads","The Alter Ridge","Remote Connections","Creative Juices","Analysis Systems","Bandwidth of Brothers","Mind Ink Bots","Freak Gravity","The Cyco Paths","Analyzing Anarchists","Tech Phantoms","Dev tools Conniesseurs","Remote Controllers","Ping Intelligence","Fully Developed","Maidens of Maya","Mechanical United","Tech Connect"]
+    names = ["Rug Heed Bend","Creed Symbol","Smalltalk Dribble","Blackouts","Digital Destroyers","Key to Innovation","Grapevine Squad","Rebooting Rebels","Computer Crew","Miss Hit Proclaim","Pseudo Boom","Gonzo Brutes","Byte Mechanics","The Hit Blunders","Hackerjacks","Loose Screws","Artful Maneuvers","The ERROR List","Troubleshooters","Blue Screens","Beast Isis","Geo-Thermal Energy","Pint Sized Benchwarmers","Digitally Destroyed","Prime Calculus","Electra","Brew Alley","Power Mongers","Bait Chums","Ping Intelligence","Skyhook DimensionThe Spin Doodles","The Systems Squads","The Alter Ridge","Remote Connections","Creative Juices","Analysis Systems","Bandwidth of Brothers","Mind Ink Bots","Freak Gravity","The Cyco Paths","Analyzing Anarchists","Tech Phantoms","Dev tools Conniesseurs","Remote Controllers","Fully Developed","Maidens of Maya","Mechanical United","Tech Connect", "The Tech Avengers", "The Tech Warriors", "The Tech Wizards", "The Techies", "The Technocrats", "The Technophiles", "The Technophobes", "The Technophreaks", "The Technophyles"]
     return names[l].replace(" ", "_")
-    # return ''.join(choice(ascii_uppercase) for i in range(l))
 
 
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
     # if postrun_commit.txt exists, make a copy of it
     if osp.isfile(f"{REPO_ROOT}/postrun_commit.txt"):
-        shutil.copy(f"{REPO_ROOT}/postrun_commit.txt", f"{REPO_ROOT}/postrun_commit-{time.time()}.txt.bak")
+        shutil.copy(f"{REPO_ROOT}/postrun_commit.txt", f"{REPO_ROOT}/postrun_commit.txt.bak")
     postrun_commit = open(f"{REPO_ROOT}/postrun_commit.txt", "a")
     # Read postrun_commit.txt.bak as a dict
     h_to_sha = {}
@@ -88,7 +84,7 @@ def pull_all_repos():
                 sha = repo.head.object.hexsha
                 os.chdir(REPO_ROOT)
                 os.system(cmd)
-                postrun_commit.write("%s,%s\n" % (l, sha))
+                postrun_commit.write("%s,%s\n" % (student_id, sha))
             # if int(subprocess.getoutput("git rev-list --count --since=yesterday --before=today HEAD"))>1:
             repo_lst[student_id] = (repo_name, repo_url, execute)
     postrun_commit.close()
@@ -103,6 +99,7 @@ def pull_all_repos():
 
 def profile_all_repos(repo_lst):
     results_lst = {}
+    commit_hashes = {}  # Store commit hashes for each student ID
     for sid, (repo_name, repo_url, execute) in repo_lst.items():
         if execute==0:
             print("Skipping: %s %s" % (sid, repo_name))
@@ -114,6 +111,16 @@ def profile_all_repos(repo_lst):
             "./repo_profiler.py", osp.join(repo_name, "repo_profiler.py"))
         os.chdir(repo_name)
         open("tests/__init__.py", "w").close()
+        
+        # Get the latest commit hash
+        try:
+            repo = git.Repo()
+            commit_hash = repo.head.object.hexsha[:6]  # Get first 6 characters
+            commit_hashes[sid] = commit_hash
+            print(f"Commit hash: {commit_hash}")
+        except Exception as e:
+            print(f"Error getting commit hash: {e}")
+            commit_hashes[sid] = "N/A"
 
         # Timout the profiler
         cmd = "python repo_profiler.py"
@@ -126,6 +133,12 @@ def profile_all_repos(repo_lst):
         except Exception as e:
             print(e)
             print("Timeout:", osp.join(REPO_ROOT, repo_name, "results.csv"))
+            if osp.isfile(osp.join(REPO_ROOT, repo_name, "results.csv")):
+                with open(osp.join(REPO_ROOT, repo_name, "results.csv"), 'r') as fp:
+                    lines = len(fp.readlines())
+                if lines == 5:
+                    results_lst[sid] = (
+                        repo_name, osp.join(REPO_ROOT, repo_name, "results.csv"))
         os.chdir(REPO_ROOT)
         print("=" * 80)
 
@@ -136,45 +149,74 @@ def profile_all_repos(repo_lst):
     for sid, (repo_name, result_fname) in results_lst.items():
         print(sid, repo_name)
         with open(result_fname) as rf:
+            if sid not in output:
+                output[sid] = {'commit_hash': commit_hashes.get(sid, 'N/A')}
+            else:
+                output[sid]['commit_hash'] = commit_hashes.get(sid, 'N/A')
+            
             for l in rf:
-                if sid not in output:
-                    output[sid] = {}
-                else:
-                    field_lst = l.strip().split(",")
+                field_lst = l.strip().split(",")
+                if len(field_lst) == 3 and field_lst[0] != "op":  # Skip header
                     field_key = "-".join(field_lst[:2])
                     field_val = float(field_lst[2])
                     output[sid][field_key] = field_val
-            avg = sum(output[sid].values()) / float(len(output[sid].values()))
-            output[sid]['avg'] = avg
+            
+            # Calculate average of timing values (excluding commit_hash)
+            timing_values = [v for k, v in output[sid].items() if k != 'commit_hash']
+            if timing_values:
+                avg = sum(timing_values) / float(len(timing_values))
+                output[sid]['avg'] = avg
+            else:
+                output[sid]['avg'] = float('inf')
+            
             if keys is None:
-                keys = output[sid].keys()
-    return output, keys
+                keys = list(output[sid].keys())
+    
+    # Ensure 'commit_hash' is in keys
+    if keys and 'commit_hash' not in keys:
+        keys.insert(0, 'commit_hash')
+    
+    return output, keys, commit_hashes
 
 
-def create_leaderboard(results, keys):
+def create_leaderboard(results, keys, commit_hashes):
     leaderboards = []
     all_data = {}
+    
     for key in keys:
-        lst = [(sid, res[key]) for sid, res in results.items()]
+        if key == 'commit_hash':
+            continue  # Skip creating a separate leaderboard for commit hashes
+        
+        lst = [(sid, res[key], res.get('commit_hash', 'N/A')) for sid, res in results.items()]
         lst = sorted(lst, key=lambda item: float(item[1]))
+        
         with open(osp.join(REPO_ROOT, "..", "%s.md" % key), "w") as ldfile:
-            ldfile.write("|ID|Time(s)|\n")
-            ldfile.write("|-|-|\n")
-            for sid, secs in lst:
-                ldfile.write("|%s|%3.5f|\n" % (sid, secs))
+            ldfile.write("|ID|Commit|Time(s)|\n")
+            ldfile.write("|-|-|-|\n")
+            for sid, secs, commit in lst:
+                ldfile.write("|%s|%s|%3.5f|\n" % (sid, commit, secs))
                 if sid not in all_data:
                     all_data[sid] = {}
                 all_data[sid][key] = secs
+                all_data[sid]['commit_hash'] = commit
+        
         leaderboards.append(lst)
 
     # The overall leader board
-    all_data = sorted(list(all_data.items()), key=lambda item: item[1]['avg'])
+    all_data_items = list(all_data.items())
+    all_data_items = sorted(all_data_items, key=lambda item: item[1].get('avg', float('inf')))
+    
     with open(osp.join(REPO_ROOT, ".", "README.md"), "w") as ldfile:
-        ldfile.write("|ID|%s|\n" % ('|'.join(keys)))
-        ldfile.write("|%s|\n" % ("|".join(["-"] * (len(keys) + 1))))
-        for sid, secs in all_data:
-            ldfile.write("|%s|%s|\n" % (sid, "|".join(
-                [("%3.5fs" % secs[k]) for k in keys])))
+        # Create header with all keys except commit_hash (which will be a separate column)
+        timing_keys = [k for k in keys if k != 'commit_hash']
+        ldfile.write("|ID|Commit|%s|\n" % ('|'.join(timing_keys)))
+        ldfile.write("|%s|\n" % ("|".join(["-"] * (len(timing_keys) + 2))))
+        
+        for sid, data in all_data_items:
+            commit = data.get('commit_hash', 'N/A')
+            values = [("%3.5fs" % data.get(k, float('inf'))) for k in timing_keys]
+            ldfile.write("|%s|%s|%s|\n" % (sid, commit, "|".join(values)))
+    
     return leaderboards
 
 
@@ -183,17 +225,17 @@ if __name__ == "__main__":
     os.system("rm -rf %s/a3-*/" % REPO_ROOT)
     os.system("ls %s" % REPO_ROOT)
     repo_lst = pull_all_repos()
-    results, keys = profile_all_repos(repo_lst)
-    leaderboards = create_leaderboard(results, keys)
+    results, keys, commit_hashes = profile_all_repos(repo_lst)
+    leaderboards = create_leaderboard(results, keys, commit_hashes)
 
     # Save the output for checking
-    np.save("leaderboards.npy", leaderboards)
-    np.save("results.npy", results)
-    np.save("repos.npy", repo_lst)
-
-    # Push
-    os.system("git add ./*.md")
     from datetime import datetime as dt
     time_str = dt.now()
+    np.save(f"leaderboards_{time_str}.npy", leaderboards)
+    np.save(f"results.npy_{time_str}", results)
+    np.save(f"repos.npy_{time_str}", repo_lst)
+
+    # # Push
+    os.system("git add ./*.md")
     os.system('git commit -m "Leader board at time: %s"' % time_str)
-    os.system(f"git push authedorigin {YEAR}")
+    os.system(f"git push authedorigin 2025_2:{YEAR}")
