@@ -13,13 +13,12 @@ REPO_PREFIX = f"https://{os.environ['GH_TOKEN']}@github.com/ML-HW-SYS/a3-%s.git"
 REPO_ROOT = os.getcwd()
 print(REPO_ROOT)
 IDLEN = 6
-YEAR = '2025'
+YEAR = 'main'
 
 
 def random_id(l):
     names = ["Rug Heed Bend","Creed Symbol","Smalltalk Dribble","Blackouts","Digital Destroyers","Key to Innovation","Grapevine Squad","Rebooting Rebels","Computer Crew","Miss Hit Proclaim","Pseudo Boom","Gonzo Brutes","Byte Mechanics","The Hit Blunders","Hackerjacks","Loose Screws","Artful Maneuvers","The ERROR List","Troubleshooters","Blue Screens","Beast Isis","Geo-Thermal Energy","Pint Sized Benchwarmers","Digitally Destroyed","Prime Calculus","Electra","Brew Alley","Power Mongers","Bait Chums","Ping Intelligence","Skyhook DimensionThe Spin Doodles","The Systems Squads","The Alter Ridge","Remote Connections","Creative Juices","Analysis Systems","Bandwidth of Brothers","Mind Ink Bots","Freak Gravity","The Cyco Paths","Analyzing Anarchists","Tech Phantoms","Dev tools Conniesseurs","Remote Controllers","Fully Developed","Maidens of Maya","Mechanical United","Tech Connect", "The Tech Avengers", "The Tech Warriors", "The Tech Wizards", "The Techies", "The Technocrats", "The Technophiles", "The Technophobes", "The Technophreaks", "The Technophyles"]
     return names[l].replace(" ", "_")
-
 
 def pull_all_repos():
     repo_lst = {} # student id -> repo info
@@ -109,6 +108,9 @@ def profile_all_repos(repo_lst):
         print("-" * 80)
         shutil.copy(
             "./repo_profiler.py", osp.join(repo_name, "repo_profiler.py"))
+        # Copy tests overriding the existing tests
+        shutil.copytree(
+            "./tests", osp.join(repo_name, "tests"), dirs_exist_ok=True)
         os.chdir(repo_name)
         open("tests/__init__.py", "w").close()
         

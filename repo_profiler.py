@@ -92,7 +92,7 @@ def test_speed_dwsp_conv2d_gpu():
 
         a = tvm.nd.array(a_np, dev)
         w = tvm.nd.array(w_np, dev)
-        b = tvm.nd.array(np.zeros(tuple(b_torch.size()), dtype='float32'), dev)
+        b = tvm.nd.array(np.zeros(tuple(b_torch.shape), dtype='float32'), dev)
         func(a, w, b)
     return timeit.timeit(tvm_time, number=n_repeat)
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
             outf.write("DWSPConv2D,gpu,%s\n" % dwsp_2dconv_gpu_time)
         except Exception as e:
             print(e)
-            print("1DConv, GPU time: inf")
+            print("DWSPConv2D, GPU time: inf")
             outf.write("DWSPConv2D,gpu,inf\n")
 
         try:
