@@ -1,3 +1,6 @@
+### Note: The Leaderboard does not run functionality tests. It now measures the time only. Another run will be done after the deadline that verifies functionality and invalidates all timings for failing functionality. You should verify the functionality locally by running the tests.
+
+
 |ID|Commit|conv1d-cpu|conv1d-gpu|DWSPConv2D-gpu|gemm-gpu|avg|
 |-|-|-|-|-|-|-|
 |Hackerjacks|94512b|0.10810s|0.12554s|2.84276s|1.74436s|1.20519s|
